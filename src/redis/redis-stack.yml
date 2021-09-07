@@ -1,0 +1,40 @@
+version: '3.6'
+services:
+
+  redis:
+    image: redis:6.2.5
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      # 配置文件
+      - /home/apps/mw/redis-6.2.4/conf/redis.conf:/etc/redis.conf
+      # 持久化的文件所在目录
+      - /home/apps/mw/redis-6.2.4/data:/data
+    command:
+      redis-server /etc/redis.conf
+    deploy:
+      placement:
+        constraints:
+          - node.labels.master_node == master_node
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+      update_config:
+        parallelism: 1
+        delay: 5s
+        monitor: 10s
+        max_failure_ratio: 0.1
+        order: start-first
+    ports:
+      - 16379:6379
+      - 6379:6379
+    networks:
+      - wms_overlay
+
+networks:
+  wms_overlay:
+    external: true
