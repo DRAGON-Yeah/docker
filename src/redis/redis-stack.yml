@@ -3,6 +3,7 @@ services:
   redis:
     image: redis:6.2.5
     container_name: redis-6-2-5
+    user: root
     environment:
       - TZ=Asia/Shanghai
     volumes:
@@ -11,7 +12,7 @@ services:
       # 持久化的文件所在目录
       - /home/apps/mw/redis/data:/data
       # 日志目录
-      - /home/apps/mw/redis/logs:/logs
+      - /home/apps/mw/redis/logs:/data/redis
     command:
       redis-server /etc/redis.conf
     deploy:
