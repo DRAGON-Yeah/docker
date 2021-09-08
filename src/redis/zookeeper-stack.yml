@@ -6,7 +6,7 @@ services:
     environment:
       - TZ=Asia/Shanghai
     networks:
-      - my-overlay
+      - wms_overlay
     ports:
       - 2181:2181
     volumes:
