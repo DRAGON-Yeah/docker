@@ -1,0 +1,27 @@
+version: '3.6'
+services:
+  zookeeper:
+    image: zookeeper:3.4
+    restart: always
+    hostname: zookeeper
+    container_name: zookeeper
+    networks:
+      - my-overlay
+    ports:
+      - 2181:2181
+    volumes:
+      - /home/apps/mw/zookeeper/data:/data
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.zookeeper=zookeeper
+
+networks:
+  wms_overlay:
+    external: true
