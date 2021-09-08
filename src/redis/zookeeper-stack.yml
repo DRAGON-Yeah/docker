@@ -2,9 +2,9 @@ version: '3.6'
 services:
   zookeeper:
     image: zookeeper:3.4
-    restart: always
-    hostname: zookeeper
     container_name: zookeeper
+    environment:
+      - TZ=Asia/Shanghai
     networks:
       - my-overlay
     ports:
@@ -12,15 +12,22 @@ services:
     volumes:
       - /home/apps/mw/zookeeper/data:/data
     deploy:
-      replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
       placement:
         constraints:
-          - node.labels.zookeeper=zookeeper
+          - node.labels.zookeeper == zookeeper
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+      update_config:
+        parallelism: 1
+        delay: 5s
+        monitor: 10s
+        max_failure_ratio: 0.1
+        order: start-first
 
 networks:
   wms_overlay:
